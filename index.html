@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Spotify - Web Player: Music for everyone</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- Modern Inter & Plus Jakarta Sans Google Fonts -->
@@ -18,6 +18,9 @@
   <div class="app-container">
     <!-- Ambient Dynamic Lighting Layer -->
     <div id="ambientGlow" class="ambient-glow"></div>
+
+    <!-- Backdrop Overlay for Mobile Sidebar -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 
     <!-- Main Workspace (Sidebar + Main Content + Queue) -->
     <div class="main-workspace">
@@ -103,7 +106,6 @@
                 <span class="library-item-meta" id="libraryLikedCount">Pinned • 0 songs</span>
               </div>
             </div>
-            <!-- More dynamic items appended via JS -->
           </div>
         </div>
       </aside>
@@ -156,11 +158,11 @@
           <div class="topbar-actions">
             <button class="api-pill" id="btnOpenApiSettings" title="Song API Status & Settings">
               <span class="api-status-dot"></span>
-              <span id="apiStatusText">Live API Engine</span>
+              <span id="apiStatusText">iTunes (Free)</span>
             </button>
             <button class="btn-profile" id="btnProfile">
               <span class="avatar-img">PRO</span>
-              <span>VIP Player</span>
+              <span class="profile-label">VIP Player</span>
             </button>
           </div>
         </header>
@@ -204,9 +206,7 @@
             </section>
 
             <!-- Dynamic Curated Shelves Container -->
-            <div id="dynamicShelvesContainer" class="flex flex-col gap-6">
-              <!-- Dynamically populated shelves will render here -->
-            </div>
+            <div id="dynamicShelvesContainer" class="flex flex-col gap-6"></div>
           </div>
 
           <!-- 2. PLAYLIST / ALBUM DETAIL VIEW -->
@@ -252,8 +252,8 @@
                 <tr class="tracklist-header">
                   <th class="track-num-cell">#</th>
                   <th>Title</th>
-                  <th>Album</th>
-                  <th>Release</th>
+                  <th class="col-hide-mobile">Album</th>
+                  <th class="col-hide-mobile">Release</th>
                   <th class="track-action-cell">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="12" cy="12" r="10"/>
@@ -262,9 +262,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody id="playlistTracksTbody">
-                <!-- Tracks dynamically injected here -->
-              </tbody>
+              <tbody id="playlistTracksTbody"></tbody>
             </table>
           </div>
 
@@ -274,18 +272,14 @@
               <!-- Top Result Card -->
               <div class="section-block">
                 <h2 class="section-title">Top Result</h2>
-                <div class="top-result-card" id="topResultCard">
-                  <!-- Injected via JS -->
-                </div>
+                <div class="top-result-card" id="topResultCard"></div>
               </div>
 
               <!-- Top Songs Column -->
               <div class="section-block">
                 <h2 class="section-title">Songs</h2>
                 <table class="tracklist-table">
-                  <tbody id="searchSongsTbody">
-                    <!-- Injected via JS -->
-                  </tbody>
+                  <tbody id="searchSongsTbody"></tbody>
                 </table>
               </div>
             </div>
@@ -300,8 +294,8 @@
           <!-- 4. LIKED SONGS VIEW -->
           <div class="liked-view" id="likedView">
             <div class="playlist-hero liked-hero-bg">
-              <div class="library-item-thumb liked-thumb" style="width: 160px; height: 160px; border-radius: var(--radius-md);">
-                <svg width="72" height="72" viewBox="0 0 24 24" fill="currentColor">
+              <div class="library-item-thumb liked-thumb liked-thumb-hero">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
               </div>
@@ -328,8 +322,8 @@
                 <tr class="tracklist-header">
                   <th class="track-num-cell">#</th>
                   <th>Title</th>
-                  <th>Album</th>
-                  <th>Release</th>
+                  <th class="col-hide-mobile">Album</th>
+                  <th class="col-hide-mobile">Release</th>
                   <th class="track-action-cell">Duration</th>
                 </tr>
               </thead>
@@ -370,8 +364,8 @@
       <canvas id="visualizerCanvas"></canvas>
     </div>
 
-    <!-- Bottom Playbar (Docked Audio Controller) -->
-    <footer class="playbar">
+    <!-- Desktop Bottom Playbar (Hidden on Mobile) -->
+    <footer class="playbar" id="desktopPlaybar">
       <!-- Left Track Details -->
       <div class="player-left">
         <img class="player-thumb" id="playerThumb" src="img/cover.jpg" alt="Track Cover">
@@ -474,11 +468,190 @@
       </div>
     </footer>
 
-    <!-- Settings & API Modal -->
+    <!-- Mobile Mini-Player (Shows above Bottom Navigation on Mobile) -->
+    <div class="mobile-mini-player" id="mobileMiniPlayer">
+      <div class="mini-player-content" id="miniPlayerExpandTrigger">
+        <img class="mini-player-thumb" id="miniPlayerThumb" src="img/cover.jpg" alt="">
+        <div class="mini-player-info">
+          <div class="mini-player-title truncate" id="miniPlayerTitle">No song playing</div>
+          <div class="mini-player-artist truncate" id="miniPlayerArtist">Tap to start music</div>
+        </div>
+      </div>
+      <div class="mini-player-actions">
+        <button class="btn-icon mini-like-btn" id="miniPlayerLikeBtn" title="Like">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+        <button class="mini-play-btn" id="miniPlayerPlayBtn" title="Play / Pause">
+          <svg id="miniPlayIconSvg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <button class="mobile-nav-item active" data-view="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav-item" data-view="search">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button class="mobile-nav-item" data-view="liked">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span>Liked</span>
+      </button>
+      <button class="mobile-nav-item" id="mobileNavLibraryBtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m16 6 4 14"/>
+          <path d="M12 6v14"/>
+          <path d="M8 8v12"/>
+          <path d="M4 4v16"/>
+        </svg>
+        <span>Library</span>
+      </button>
+      <button class="mobile-nav-item" id="mobileNavSettingsBtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span>API & Keys</span>
+      </button>
+    </nav>
+
+    <!-- Full-Screen Mobile Now Playing Modal -->
+    <div class="mobile-player-overlay" id="mobilePlayerOverlay">
+      <div class="mobile-player-header">
+        <button class="btn-icon" id="btnCollapseMobilePlayer" title="Collapse Player">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="mobile-player-context">
+          <span class="text-xs text-subdued font-bold">PLAYING FROM</span>
+          <span class="text-sm font-bold truncate" id="mobilePlayerContext">Spotify Playlist</span>
+        </div>
+        <button class="btn-icon" id="btnMobileVisualizerToggle" title="Visualizer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mobile-player-artwork-box">
+        <img class="mobile-player-artwork" id="mobilePlayerCover" src="img/cover.jpg" alt="Now Playing">
+      </div>
+
+      <div class="mobile-player-track-row">
+        <div class="mobile-player-meta">
+          <h2 class="mobile-track-title truncate" id="mobilePlayerTitle">No Song Playing</h2>
+          <p class="mobile-track-artist truncate" id="mobilePlayerArtist">Select music</p>
+        </div>
+        <button class="btn-like" id="mobilePlayerLikeBtn" title="Like">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Scrubber -->
+      <div class="mobile-scrubber-box">
+        <div class="progressbar-container" id="mobileProgressContainer">
+          <div class="progressbar-track">
+            <div class="progressbar-fill" id="mobileProgressFill">
+              <div class="progressbar-thumb"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between text-xs text-subdued mt-1">
+          <span id="mobileCurTimeText">00:00</span>
+          <span id="mobileTotalDurText">00:00</span>
+        </div>
+      </div>
+
+      <!-- Mobile Controls Row -->
+      <div class="mobile-controls-row">
+        <button class="control-btn" id="mobileBtnShuffle" title="Shuffle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 3 21 3 21 8"/>
+            <line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/>
+            <line x1="15" y1="15" x2="21" y2="21"/>
+            <line x1="4" y1="4" x2="9" y2="9"/>
+          </svg>
+        </button>
+        <button class="control-btn" id="mobileBtnPrev" title="Previous">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="19 20 9 12 19 4 19 20"/>
+            <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"/>
+          </svg>
+        </button>
+        <button class="btn-play-main mobile-play-giant" id="mobileBtnPlayPause" title="Play">
+          <svg id="mobilePlayIconSvg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </button>
+        <button class="control-btn" id="mobileBtnNext" title="Next">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 4 15 12 5 20 5 4"/>
+            <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"/>
+          </svg>
+        </button>
+        <button class="control-btn" id="mobileBtnRepeat" title="Repeat">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 1 21 5 17 9"/>
+            <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+            <polyline points="7 23 3 19 7 15"/>
+            <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Volume & Extra Row -->
+      <div class="mobile-footer-row">
+        <button class="btn-icon" id="mobileBtnMute">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+        <div class="volume-slider-track flex-1" id="mobileVolumeTrack">
+          <div class="volume-track-bg">
+            <div class="volume-fill" id="mobileVolumeFill"></div>
+          </div>
+        </div>
+        <button class="btn-icon" id="mobileBtnQueue" title="Queue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Enhanced Settings & Persistent API Key Modal -->
     <div class="modal-overlay" id="settingsModal">
-      <div class="modal-content">
+      <div class="modal-content api-modal-content">
         <div class="modal-header">
-          <h2 class="modal-title">Audio Engine & Settings</h2>
+          <div>
+            <h2 class="modal-title">Song API & Key Configuration</h2>
+            <p class="text-xs text-subdued mt-1">Configure your active music streaming provider & API credentials (Persistent across sessions)</p>
+          </div>
           <button class="btn-icon" id="btnCloseModal">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -486,32 +659,94 @@
             </svg>
           </button>
         </div>
+
         <div class="flex flex-col gap-4 text-sm">
+          <!-- Engine Selection Cards Grid -->
           <div>
-            <label class="font-bold text-white block mb-1">Active Song Provider</label>
-            <p class="text-subdued text-xs mb-2">Powered by free global catalog APIs with high-fidelity AAC streams and high-resolution artwork.</p>
-            <div class="flex gap-2">
-              <button class="chip active" id="btnEngineItunes">Apple Music / iTunes (Global Free)</button>
-              <button class="chip" id="btnEngineAudius">Audius (Decentralized Free)</button>
+            <label class="font-bold text-white block mb-2">Select Active Provider</label>
+            <div class="api-engine-grid">
+              <!-- Provider 1: iTunes -->
+              <div class="api-engine-card active" data-engine="itunes" id="cardEngineItunes">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-white text-sm">Apple Music / iTunes</span>
+                  <span class="api-badge-free">100M+ Songs</span>
+                </div>
+                <p class="text-xs text-subdued">Zero API key required. Instant HQ streams, ultra HD artwork, global catalog (Bollywood, Punjabi, Pop, Hip-Hop, Rock).</p>
+              </div>
+
+              <!-- Provider 2: Audius -->
+              <div class="api-engine-card" data-engine="audius" id="cardEngineAudius">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-white text-sm">Audius Network</span>
+                  <span class="api-badge-free">Decentralized</span>
+                </div>
+                <p class="text-xs text-subdued">Open decentralized music network. Trending electronic, EDM, lofi, and independent tracks with full-length audio.</p>
+              </div>
+
+              <!-- Provider 3: Jamendo -->
+              <div class="api-engine-card" data-engine="jamendo" id="cardEngineJamendo">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-white text-sm">Jamendo Music</span>
+                  <span class="api-badge-key">Client ID</span>
+                </div>
+                <p class="text-xs text-subdued">Royalty-free independent music catalog with full-length streaming. Enter your free Jamendo developer client ID below.</p>
+              </div>
+
+              <!-- Provider 4: Custom Endpoint -->
+              <div class="api-engine-card" data-engine="custom" id="cardEngineCustom">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-white text-sm">Custom API / Proxy</span>
+                  <span class="api-badge-custom">Developer</span>
+                </div>
+                <p class="text-xs text-subdued">Connect your own custom music API or reverse proxy endpoint with optional authorization token.</p>
+              </div>
             </div>
           </div>
-          <div class="p-3 bg-base rounded-md border border-subtle">
-            <div class="text-xs font-bold text-green mb-1">Live Engine Status: Connected</div>
-            <div class="text-xs text-subdued" id="engineStatusInfo">Catalog: 100M+ tracks across Pop, Punjabi, Bollywood, Lo-Fi, Hip-Hop, Rock, Latin. Zero authentication / rate limiting needed.</div>
-          </div>
-          <div>
-            <label class="font-bold text-white block mb-1">Keyboard Shortcuts</label>
-            <div class="grid grid-cols-2 gap-2 text-xs text-subdued">
-              <div><kbd class="p-1 bg-elevated rounded">Space</kbd> : Play / Pause</div>
-              <div><kbd class="p-1 bg-elevated rounded">N</kbd> / <kbd class="p-1 bg-elevated rounded">P</kbd> : Next / Prev</div>
-              <div><kbd class="p-1 bg-elevated rounded">M</kbd> : Mute / Unmute</div>
-              <div><kbd class="p-1 bg-elevated rounded">L</kbd> : Like Current Song</div>
-              <div><kbd class="p-1 bg-elevated rounded">Ctrl + K</kbd> : Focus Search</div>
-              <div><kbd class="p-1 bg-elevated rounded">S</kbd> : Toggle Shuffle</div>
+
+          <!-- Dynamic Input Details (Jamendo / Custom) -->
+          <div class="api-inputs-box" id="apiInputsBox">
+            <!-- Jamendo inputs -->
+            <div class="api-input-group" id="groupJamendoInputs" style="display: none;">
+              <label class="text-xs font-semibold text-white block mb-1">Jamendo Client ID</label>
+              <div class="flex gap-2">
+                <input type="text" id="inputJamendoKey" class="api-text-input flex-1" placeholder="Enter your Jamendo Client ID (e.g. 56d30c95 or custom)" autocomplete="off">
+              </div>
+              <span class="text-xs text-muted mt-1 block">Get a free client ID at <a href="https://developer.jamendo.com" target="_blank" class="text-green">developer.jamendo.com</a></span>
             </div>
+
+            <!-- Custom API inputs -->
+            <div class="api-input-group" id="groupCustomInputs" style="display: none;">
+              <label class="text-xs font-semibold text-white block mb-1">Custom API Search Endpoint</label>
+              <input type="text" id="inputCustomEndpoint" class="api-text-input w-full mb-2" placeholder="https://api.yourdomain.com/search?q=" autocomplete="off">
+              <label class="text-xs font-semibold text-white block mb-1">API Key / Bearer Token (Optional)</label>
+              <input type="password" id="inputCustomKey" class="api-text-input w-full" placeholder="Bearer eyJhbGci... or api_key" autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Live Connection Test Bar -->
+          <div class="p-3 bg-base rounded-md border border-subtle flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="api-status-dot" id="apiTestDot"></span>
+              <span class="text-xs font-bold text-white" id="apiTestStatus">Ready to test connection</span>
+            </div>
+            <button class="chip" id="btnTestApiConnection">⚡ Test Latency</button>
+          </div>
+
+          <!-- Modal Action Buttons -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle">
+            <button class="btn-secondary-hero" id="btnResetApiSettings" style="padding: 8px 16px; font-size: 0.82rem;">Reset to Default</button>
+            <button class="btn-play-hero" id="btnSaveApiSettings" style="padding: 10px 24px; font-size: 0.88rem;">Save & Apply Settings</button>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span id="toastMessage">Settings Saved!</span>
     </div>
   </div>
 

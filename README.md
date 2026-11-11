@@ -15,14 +15,20 @@ A modern, high-fidelity **Spotify Web Player** built with vanilla ES6+ JavaScrip
 
 ## ✨ Features
 
-- 🎧 **Real, Free Music Catalog (100M+ Songs)**:
-  - Powered by the **Apple Music / iTunes Public Catalog API** (100% free, no API keys, no rate limits, zero CORS restrictions).
-  - Alternative decentralized streaming support with **Audius API**.
-  - High-fidelity streaming audio previews that load and play instantly without lag or buffering.
-  - Ultra HD 600×600 album artwork upscaled dynamically for crystal-clear visuals.
+- 📱 **100% Responsive Across All Devices**:
+  - **Mobile Phones (320px - 480px)**: Dedicated **Mobile Bottom Navigation Bar**, docked **Mobile Mini-Player**, and full-screen **Mobile Player Sheet** with gesture drag scrubbing, big controls, and album art.
+  - **Tablets & Phablets (481px - 1024px)**: Fluid card grids, adaptive sidebars, and optimized track tables.
+  - **Desktop & Ultra-wide**: Full obsidian dark Spotify desktop workspace with docked bottom playbar, real-time audio visualizer, and slide-over queue drawer.
+- 🔑 **Enhanced Persistent Song API & Key Manager**:
+  - **Apple Music / iTunes Public Catalog (Default)**: 100% Free, zero key required, 100M+ songs worldwide with instant audio streams.
+  - **Audius Decentralized Music Network**: Free decentralized streaming with trending EDM, lofi, hip-hop, and indie artists.
+  - **Jamendo Music**: Royalty-free independent tracks with custom developer client ID support.
+  - **Custom API / Audio Proxy**: Connect your own custom song search & streaming endpoint with optional Bearer token.
+  - **Live Connection Latency Test**: Interactive ping button measuring round-trip API speed in real time.
+  - **Full Persistence**: Selected provider and custom keys are preserved in `localStorage` across reloads.
 - 🎨 **Next-Gen Spotify Desktop UI & Glassmorphism**:
   - Obsidian Dark theme (`#0b0b0b`) with authentic Spotify Green accents (`#1ed760`).
-  - **Dynamic Ambient Glow**: Ambient background lighting that dynamically adapts its color aura to match the currently playing song's vibe and genre.
+  - **Dynamic Ambient Glow**: Breathing radial light that dynamically adapts its color aura to match the currently playing song's vibe and genre.
   - Tactile card hover elevations, floating green play buttons, and interactive equalizer animations.
 - 🔍 **Universal Live Search**:
   - Real-time debounced search bar (`Ctrl + K` or `/`).
@@ -40,6 +46,7 @@ A modern, high-fidelity **Spotify Web Player** built with vanilla ES6+ JavaScrip
   - Live frequency spectrum visualizer reacting directly to the musical rhythm and basslines.
 - 📋 **Full Playlist & Album Detail Views**:
   - Large banner with blurred backdrop, play all button, shuffle, total duration, and interactive track table (`#`, `Title`, `Album`, `Date`, `Duration`, `Like`).
+  - Mobile-responsive table automatically hides secondary columns to prevent horizontal overflow.
 - 💖 **Liked Songs & Custom Playlists**:
   - One-click heart toggling with pop animations.
   - LocalStorage persistence: your favorites and created playlists stay saved across sessions.
@@ -93,11 +100,11 @@ npx serve .
 
 ```
 Spotify/
-├── index.html          # Main Spotify Web Player interface
+├── index.html          # Main Spotify Web Player interface (Desktop & Mobile)
 ├── favicon.ico         # Spotify favicon
 ├── css/
-│   ├── style.css       # Complete modern Spotify desktop styles
-│   └── utility.css     # CSS variables, animations, scrollbars
+│   ├── style.css       # Complete modern Spotify desktop & mobile styles
+│   └── utility.css     # CSS variables, animations, scrollbars, toast
 ├── js/
 │   └── script.js       # MusicAPI, Player engine, Visualizer & UI state
 ├── img/                # SVG icons and covers
