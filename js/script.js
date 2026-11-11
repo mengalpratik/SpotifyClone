@@ -755,7 +755,7 @@ const UI = {
   },
 
   toggleSidebar() {
-    const isMobile = window.innerWidth <= 992;
+    const isMobile = window.innerWidth <= 768;
     const sidebar = document.getElementById('sidebar');
     const burgerBtn = document.getElementById('mobileMenuBtn');
 
@@ -821,6 +821,13 @@ const UI = {
     // Sidebar Backdrop Click Dismiss
     document.getElementById('sidebarBackdrop')?.addEventListener('click', () => {
       UI.closeMobileSidebar();
+    });
+
+    // Auto-dismiss mobile sidebar drawer on viewport resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        UI.closeMobileSidebar();
+      }
     });
 
     // Settings Modal Open/Close

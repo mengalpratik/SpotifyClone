@@ -27,25 +27,26 @@
   opacity: 0.85;
 }
 
-/* Sidebar Backdrop on Mobile */
+/* Sidebar Backdrop on Mobile (Clean dark overlay without blur) */
 .sidebar-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 2400;
   display: none;
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--transition-normal);
 }
 
 .sidebar-backdrop.active {
   display: block;
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Main Workspace (Sidebar + Content + Queue) */
@@ -56,7 +57,7 @@
   padding: 8px 8px 0 8px;
   gap: 8px;
   position: relative;
-  z-index: 1;
+  /* z-index is intentionally omitted here to prevent trapping fixed-position children in an isolated stacking context */
 }
 
 /* ==========================================================================
@@ -1875,33 +1876,11 @@
   border-color: var(--spotify-green);
 }
 
-/* Tablet & Smaller (< 992px) */
+/* Tablet & Split-Screen (< 992px) */
 @media (max-width: 992px) {
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translateX(-100%);
-    width: min(320px, 85vw);
-    height: 100vh;
-    height: 100dvh;
-    z-index: 2500;
-    background-color: #121212;
-    padding: 12px;
-    box-shadow: 14px 0 36px rgba(0, 0, 0, 0.95);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .sidebar.mobile-open {
-    transform: translateX(0);
-  }
-
-  .sidebar-backdrop {
-    z-index: 2400;
-  }
-
-  .sidebar-close-btn {
-    display: flex;
+    width: 240px;
+    min-width: 220px;
   }
 
   .search-top-container {
@@ -1935,6 +1914,34 @@
 
 /* Mobile & Phablet (<= 768px) */
 @media (max-width: 768px) {
+  /* Mobile Sidebar Slide-Over Drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: min(320px, 85vw);
+    height: 100vh;
+    height: 100dvh;
+    z-index: 2500;
+    background-color: #121212;
+    padding: 12px;
+    box-shadow: 14px 0 36px rgba(0, 0, 0, 0.95);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    z-index: 2400;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+
   /* Hide Desktop Playbar */
   .playbar {
     display: none !important;
