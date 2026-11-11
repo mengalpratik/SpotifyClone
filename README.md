@@ -4,6 +4,7 @@
 [![Deployment Status](https://img.shields.io/github/actions/workflow/status/mengalpratik/SpotifyClone/static.yml?branch=main&style=for-the-badge&label=GitHub%20Pages)](https://mengalpratik.github.io/SpotifyClone/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/pratikmengal)
 
 A modern, high-fidelity **Spotify Web Player** built with vanilla ES6+ JavaScript, CSS3 Glassmorphism, and HTML5 Web Audio API. Powered by **real, free-to-use music catalog APIs** with zero API key configuration needed out of the box, bringing instant playback of 100M+ songs to life!
 
@@ -113,6 +114,16 @@ Spotify/
 │   └── ...
 └── README.md           # Project documentation
 ```
+
+---
+
+## ☕ Support & Sponsorship
+
+If you enjoy streaming music with this web player and find this project inspiring, consider buying me a coffee to support future updates and maintenance!
+
+<a href="https://buymeacoffee.com/pratikmengal" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="44" width="185">
+</a>
 
 ---
 
