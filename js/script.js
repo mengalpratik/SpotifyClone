@@ -754,14 +754,35 @@ const UI = {
     }
   },
 
+  toggleSidebar() {
+    const isMobile = window.innerWidth <= 992;
+    const sidebar = document.getElementById('sidebar');
+    const burgerBtn = document.getElementById('mobileMenuBtn');
+
+    if (isMobile) {
+      if (sidebar?.classList.contains('mobile-open')) {
+        UI.closeMobileSidebar();
+      } else {
+        UI.openMobileSidebar();
+      }
+    } else {
+      sidebar?.classList.toggle('collapsed');
+      const isCollapsed = sidebar?.classList.contains('collapsed');
+      burgerBtn?.classList.toggle('active', isCollapsed);
+      UI.showToast(isCollapsed ? 'Sidebar collapsed' : 'Sidebar expanded');
+    }
+  },
+
   closeMobileSidebar() {
     document.getElementById('sidebar')?.classList.remove('mobile-open');
     document.getElementById('sidebarBackdrop')?.classList.remove('active');
+    document.getElementById('mobileMenuBtn')?.classList.remove('active');
   },
 
   openMobileSidebar() {
     document.getElementById('sidebar')?.classList.add('mobile-open');
     document.getElementById('sidebarBackdrop')?.classList.add('active');
+    document.getElementById('mobileMenuBtn')?.classList.add('active');
   },
 
   setupNavigationEvents() {
@@ -787,9 +808,14 @@ const UI = {
       document.getElementById('settingsModal')?.classList.add('active');
     });
 
-    // Mobile Hamburger
+    // Burger Menu Button (Toggles Mobile Drawer / Desktop Rail)
     document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-      UI.openMobileSidebar();
+      UI.toggleSidebar();
+    });
+
+    // Close Button inside Sidebar
+    document.getElementById('btnCloseSidebar')?.addEventListener('click', () => {
+      UI.closeMobileSidebar();
     });
 
     // Sidebar Backdrop Click Dismiss

@@ -71,7 +71,56 @@
   gap: 8px;
   height: 100%;
   flex-shrink: 0;
-  transition: transform var(--transition-normal), left var(--transition-normal);
+  transition: width var(--transition-normal), transform var(--transition-normal);
+}
+
+/* Desktop Collapsed Sidebar Rail */
+.sidebar.collapsed {
+  width: 76px !important;
+  min-width: 76px !important;
+  max-width: 76px !important;
+}
+
+.sidebar.collapsed .badge-pro,
+.sidebar.collapsed .nav-item span:not(.nav-icon),
+.sidebar.collapsed .library-header-title span,
+.sidebar.collapsed .library-chips,
+.sidebar.collapsed .library-item-details,
+.sidebar.collapsed #btnCreatePlaylist,
+.sidebar.collapsed .sidebar-close-btn {
+  display: none !important;
+}
+
+.sidebar.collapsed .sidebar-brand {
+  justify-content: center !important;
+  padding-left: 0;
+}
+
+.sidebar.collapsed .sidebar-brand .brand-logo {
+  height: 26px;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar.collapsed .library-header {
+  justify-content: center;
+}
+
+.sidebar.collapsed .library-item {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.sidebar.collapsed .library-item-thumb {
+  width: 44px;
+  height: 44px;
+}
+
+.sidebar-close-btn {
+  display: none;
 }
 
 .sidebar-box {
@@ -1797,13 +1846,33 @@
 /* ==========================================================================
    Responsive Breakpoints & Media Queries
    ========================================================================== */
-.mobile-nav-toggle {
-  display: none;
-  background: transparent;
-  border: none;
+.burger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-base);
   cursor: pointer;
   padding: 6px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.burger-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--spotify-green);
+  transform: scale(1.05);
+  border-color: rgba(30, 215, 96, 0.4);
+}
+
+.burger-btn.active {
+  color: var(--spotify-green);
+  background-color: rgba(30, 215, 96, 0.15);
+  border-color: var(--spotify-green);
 }
 
 /* Tablet & Smaller (< 992px) */
@@ -1811,18 +1880,27 @@
   .sidebar {
     position: fixed;
     top: 0;
-    left: -100%;
-    width: 290px;
+    left: 0;
+    transform: translateX(-100%);
+    width: min(320px, 85vw);
     height: 100vh;
-    z-index: 1000;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.85);
+    height: 100dvh;
+    z-index: 2500;
+    background-color: #121212;
+    padding: 12px;
+    box-shadow: 14px 0 36px rgba(0, 0, 0, 0.95);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sidebar.mobile-open {
-    left: 0;
+    transform: translateX(0);
   }
 
-  .mobile-nav-toggle {
+  .sidebar-backdrop {
+    z-index: 2400;
+  }
+
+  .sidebar-close-btn {
     display: flex;
   }
 
