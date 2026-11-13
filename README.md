@@ -5,6 +5,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/pratikmengal)
+[![UPI](https://img.shields.io/badge/UPI-iampratikmengal--2%40okaxis-4285F4?style=for-the-badge&logo=google-pay&logoColor=white)](upi://pay?pa=iampratikmengal-2@okaxis&pn=Pratik%20Mengal&cu=INR)
 
 A modern, high-fidelity **Spotify Web Player** built with vanilla ES6+ JavaScript, CSS3 Glassmorphism, and HTML5 Web Audio API. Powered by **real, free-to-use music catalog APIs** with zero API key configuration needed out of the box, bringing instant playback of 100M+ songs to life!
 
@@ -119,11 +120,22 @@ Spotify/
 
 ## ☕ Support & Sponsorship
 
-If you enjoy streaming music with this web player and find this project inspiring, consider buying me a coffee to support future updates and maintenance!
+If you enjoy streaming music with this web player and find this project inspiring, consider buying me a coffee or donating via UPI:
 
 <a href="https://buymeacoffee.com/pratikmengal" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="44" width="185">
 </a>
+&nbsp;&nbsp;
+<a href="upi://pay?pa=iampratikmengal-2@okaxis&pn=Pratik%20Mengal&cu=INR">
+  <img src="https://img.shields.io/badge/UPI-iampratikmengal--2%40okaxis-008080?style=for-the-badge&logo=google-pay&logoColor=white" height="42" alt="Pay via UPI" />
+</a>
+
+<details>
+  <summary><b>🇮🇳 Scan to Pay via UPI (GPay / PhonePe / Paytm / BHIM)</b></summary>
+  <br/>
+  <img src="https://raw.githubusercontent.com/mengalpratik/mengalpratik/main/assets/upi-qr.png" alt="Pratik Mengal UPI QR Code" width="220" style="border-radius: 12px; border: 1px solid rgba(128,128,128,0.2);" />
+  <p><code>iampratikmengal-2@okaxis</code></p>
+</details>
 
 ---
 
